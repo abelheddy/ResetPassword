@@ -46,7 +46,7 @@ Retorna:
 */
 func sendEmail(to string, subject string, body string) error {
 	m := gomail.NewMessage()
-	m.SetHeader("From", "abelhecks@gmail.com") // Cuenta de correo remitente
+	m.SetHeader("From", "") // Cuenta de correo remitente
 	m.SetHeader("To", to)                     // Destinatario
 	m.SetHeader("Subject", subject)           // Asunto del correo
 	m.SetBody("text/plain", body)             // Cuerpo como texto plano
@@ -55,8 +55,8 @@ func sendEmail(to string, subject string, body string) error {
 	dialer := gomail.NewDialer(
 		"smtp.gmail.com",                // Servidor SMTP
 		587,                             // Puerto
-		"abelhecks@gmail.com",           // Usuario
-		"exzmnbttgpsoxhdl",              // Contraseña/Token
+		"",           // Usuario
+		"",              // Contraseña/Token
 	)
 
 	// Intenta enviar el correo
