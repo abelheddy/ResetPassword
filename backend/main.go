@@ -30,6 +30,7 @@ type AppConfig struct {
 	ServerPort string `json:"server_port"`
 }
 
+<<<<<<< HEAD
 // Configuración SMTP
 type SMTPConfig struct {
 	ID        int       `json:"id,omitempty"`
@@ -47,6 +48,31 @@ type SMTPConfig struct {
 type RequestCode struct {
 	Email string `json:"email"`
 }
+=======
+/*
+sendEmail envía un correo electrónico al destinatario especificado
+Parámetros:
+- to: Dirección de correo del destinatario
+- subject: Asunto del correo
+- body: Cuerpo del mensaje
+Retorna:
+- error si ocurre algún problema durante el envío
+*/
+func sendEmail(to string, subject string, body string) error {
+	m := gomail.NewMessage()
+	m.SetHeader("From", "") // Cuenta de correo remitente
+	m.SetHeader("To", to)                     // Destinatario
+	m.SetHeader("Subject", subject)           // Asunto del correo
+	m.SetBody("text/plain", body)             // Cuerpo como texto plano
+
+	// Configuración del servidor SMTP (Gmail)
+	dialer := gomail.NewDialer(
+		"smtp.gmail.com",                // Servidor SMTP
+		587,                             // Puerto
+		"",           // Usuario
+		"",              // Contraseña/Token
+	)
+>>>>>>> origin/main
 
 var db *sql.DB
 
@@ -530,6 +556,7 @@ func createSMTPConfigHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al iniciar transacción"})
 		return
 	}
+<<<<<<< HEAD
 	defer tx.Rollback()
 
 	_, err = tx.Exec("UPDATE smtp_config SET is_active = FALSE")
@@ -729,4 +756,6 @@ func testSMTPConnectionHandler(c *gin.Context) {
 		"message": "SMTP connection successfully verified",
 		"details": fmt.Sprintf("Connected to %s:%d with TLS support", config.Host, config.Port),
 	})
+=======
+>>>>>>> origin/main
 }
