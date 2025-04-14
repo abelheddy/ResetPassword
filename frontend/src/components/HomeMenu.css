@@ -1,0 +1,48 @@
+.home-menu {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .home-menu h2 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+  }
+  
+  .menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .menu-options button {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+  
+  .menu-options button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .menu-options .btn-primary {
+    background-color: #3498db;
+  }
+  
+  .menu-options .btn-secondary {
+    background-color: #2ecc71;
+  }
+  
+  .menu-options .btn-primary:hover {
+    background-color: #2980b9;
+  }
+  
+  .menu-options .btn-secondary:hover {
+    background-color: #27ae60;
+  }
