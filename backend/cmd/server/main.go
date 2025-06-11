@@ -1,30 +1,48 @@
 package main
 
 import (
-	"log"
-	"password-recovery/internal/config"
-	"password-recovery/internal/database"
-	"password-recovery/internal/server"
+	"fmt"
+	"net/http"
+	"os"
+	"password-recovery/config"
+	"password-recovery/routes"
 )
 
 func main() {
-	// Cargar configuración
-	cfg := config.LoadConfig()
-
-	// Inicializar base de datos
-	db, err := database.InitDB(cfg)
+	// Configuración de credenciales
+	key := []byte("12345678901234567890123456789012") // Tu key de prueba
+	
+	// Cargar credenciales encriptadas
+	user, pass, err := config.LoadEncryptedCredentials(key)
 	if err != nil {
-		log.Fatalf("Error al conectar a la base de datos: %v", err)
-	}
-	defer db.Close()
+		fmt.Println("⚠️ Usando credenciales por defecto (para desarrollo):")
 
-	// Crear tablas si no existen
-	if err := database.RunMigrations(db); err != nil {
-		log.Fatalf("Error al ejecutar migraciones: %v", err)
+	} else {
+		fmt.Println("🔑 Credenciales cargadas desde archivo encriptado")
+		config.SetupUser = user
+		config.SetupPassword = pass
 	}
 
-	// Iniciar servidor
-	if err := server.Start(cfg, db); err != nil {
-		log.Fatalf("Error al iniciar el servidor: %v", err)
+	// Mostrar credenciales (solo para desarrollo)
+	//fmt.Printf("\n🔐 Credenciales de acceso:\nUsuario: %s\nContraseña: %s\n\n", 
+	//	config.SetupUser, config.SetupPassword)
+
+	// Configurar servidor
+	router := routes.SetupRouter()
+
+	port := ":8080"
+	if portEnv := os.Getenv("PORT"); portEnv != "" {
+		port = ":" + portEnv
+	}
+
+	fmt.Printf("🚀 Servidor iniciado en http://localhost%s\n", port)
+	fmt.Println("📡 Endpoints disponibles:")
+	fmt.Println("- POST /api/login-setup")
+	fmt.Println("- POST /api/setup-db")
+	fmt.Println("- GET  /api/status")
+
+	if err := http.ListenAndServe(port, router); err != nil {
+		fmt.Printf("❌ Error iniciando servidor: %v\n", err)
+		os.Exit(1)
 	}
 }
