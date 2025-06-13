@@ -27,11 +27,12 @@ export async function loginSetup(user, pass) {
   return await response.json();
 }
 
+// Función para guardar configuración
 export async function saveDBConfig(config) {
   const response = await fetch(`${API_BASE_URL}/api/setup-db`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(config),
   });
@@ -39,20 +40,50 @@ export async function saveDBConfig(config) {
   if (!response.ok) {
     let errorData = {};
     try {
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        errorData = await response.json();
-      } else {
-        const text = await response.text();
-        console.error("Respuesta no JSON:", text);
-        throw new Error(`Error inesperado del servidor: ${text.substring(0, 100)}...`);
-      }
-    } catch (parseError) {
-      console.error("Error al interpretar respuesta del servidor", parseError);
+      errorData = await response.json();
+    } catch (e) {
+      errorData = { error: "Error desconocido" };
     }
-
-    throw new Error(errorData.message || "Error guardando configuración");
+    throw new Error(errorData.error || "Error guardando configuración");
   }
 
   return await response.json();
+}
+//resetean la configuración del sistema
+export async function resetConfiguration() {
+  const response = await fetch(`${API_BASE_URL}/api/setup/reset`, {
+    method: 'POST'
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "Error al resetear la configuración");
+  }
+
+  // Forzar recarga del estado en el backend
+  await fetch(`${API_BASE_URL}/api/status`, {
+    method: 'GET',
+    cache: 'no-cache'
+  });
+
+  return await response.json();
+}
+
+// Función para probar conexión con configuración temporal
+export async function testDBConnection(config) {
+  const response = await fetch(`${API_BASE_URL}/api/db/test-config`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(config),
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.error || "Error al probar la conexión");
+  }
+
+  return result;
 }

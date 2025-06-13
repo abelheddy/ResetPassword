@@ -11,7 +11,7 @@ import (
 func main() {
 	// Configuración de credenciales
 	key := []byte("12345678901234567890123456789012") // Tu key de prueba
-	
+
 	// Cargar credenciales encriptadas
 	user, pass, err := config.LoadEncryptedCredentials(key)
 	if err != nil {
@@ -24,7 +24,7 @@ func main() {
 	}
 
 	// Mostrar credenciales (solo para desarrollo)
-	//fmt.Printf("\n🔐 Credenciales de acceso:\nUsuario: %s\nContraseña: %s\n\n", 
+	//fmt.Printf("\n🔐 Credenciales de acceso:\nUsuario: %s\nContraseña: %s\n\n",
 	//	config.SetupUser, config.SetupPassword)
 
 	// Configurar servidor
@@ -40,6 +40,9 @@ func main() {
 	fmt.Println("- POST /api/login-setup")
 	fmt.Println("- POST /api/setup-db")
 	fmt.Println("- GET  /api/status")
+	fmt.Println("- POST   /api/db/test")
+	fmt.Println("- GET    /api/db/config")
+	fmt.Println("- PUT    /api/db/config")
 
 	if err := http.ListenAndServe(port, router); err != nil {
 		fmt.Printf("❌ Error iniciando servidor: %v\n", err)

@@ -1,28 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveDBConfig, checkSetupStatus, API_BASE_URL } from "../../services/api";
-
-export async function checkSystemStatus() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/status`);
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await response.text();
-      throw new Error(`Respuesta no JSON: ${text.substring(0, 100)}...`);
-    }
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error verificando estado del sistema");
-    }
-
-    return await response.json();
-  } catch (err) {
-    console.error("Error en checkSystemStatus:", err);
-    throw err;
-  }
-}
+import { saveDBConfig, testDBConnection } from "../../services/api"; // Nueva función
 
 export default function SetupDBForm() {
   const navigate = useNavigate();
@@ -35,44 +13,49 @@ export default function SetupDBForm() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+
+  // Función para probar conexión
+  const handleTestConnection = async () => {
+    setError("");
+    setTestResult(null);
+
+    try {
+      const result = await testDBConnection(formData);
+      setTestResult({
+        success: true,
+        message: "Conexión exitosa!",
+        details: result
+      });
+    } catch (err) {
+      setTestResult({
+        success: false,
+        message: err.message
+      });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // Requerir prueba de conexión exitosa primero
+    if (!testResult || !testResult.success) {
+      setError("Debes probar la conexión exitosamente antes de guardar");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // 1. Guardar configuración de la DB
-      const saveResponse = await saveDBConfig(formData);
-      console.log("Respuesta saveDBConfig:", saveResponse);
-
-      // PRUEBA: forzar redirección para ver si navigate funciona
-      // navigate("/dashboard");
-
-      // 2. Verificar si el setup está completo
-      if (saveResponse.setup === true) {
-        console.log("Setup completado según saveResponse. Navegando a /dashboard");
-        navigate("/dashboard");
-      } else {
-        // Si el backend no devolvió explícitamente setup: true, verificamos el estado
-        const status = await checkSetupStatus();
-        console.log("Respuesta checkSetupStatus:", status);
-
-        if (status.setup) {
-          console.log("Setup completado según checkSetupStatus. Navegando a /dashboard");
-          navigate("/dashboard");
-        } else {
-          throw new Error("La configuración no se completó correctamente en el backend");
-        }
-      }
+      await saveDBConfig(formData);
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Error al guardar la configuración");
-      console.error("Error en SetupDBForm:", err);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <div style={{ maxWidth: "600px", margin: "2rem auto", padding: "1rem" }}>
       <h2>Configuración de Base de Datos</h2>
@@ -135,22 +118,60 @@ export default function SetupDBForm() {
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "0.5rem 1rem",
-            background: loading ? "#ccc" : "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            width: "100%"
-          }}
-        >
-          {loading ? "Guardando..." : "Guardar Configuración"}
-        </button>
+        <div style={{ marginTop: "1rem", display: "flex", gap: "1rem" }}>
+          <button
+            type="button"
+            onClick={handleTestConnection}
+            style={{
+              padding: "0.5rem 1rem",
+              background: "#6c757d",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              flex: 1
+            }}
+          >
+            Probar Conexión
+          </button>
+
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={loading || !testResult?.success}
+            style={{
+              padding: "0.5rem 1rem",
+              background: loading || !testResult?.success ? "#ccc" : "#007bff",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: testResult?.success ? "pointer" : "not-allowed",
+              flex: 1
+            }}
+          >
+            {loading ? "Guardando..." : "Guardar Configuración"}
+          </button>
+        </div>
       </form>
+
+      {testResult && (
+        <div style={{
+          marginTop: "1rem",
+          padding: "1rem",
+          borderLeft: `4px solid ${testResult.success ? "#28a745" : "#dc3545"}`,
+          backgroundColor: "#f8f9fa"
+        }}>
+          <p style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>
+            {testResult.success ? "✓ Conexión exitosa" : "✗ Error de conexión"}
+          </p>
+          <p>{testResult.message}</p>
+          {testResult.details && (
+            <pre style={{ marginTop: "0.5rem", fontSize: "0.8rem" }}>
+              {JSON.stringify(testResult.details, null, 2)}
+            </pre>
+          )}
+        </div>
+      )}
     </div>
   );
 }

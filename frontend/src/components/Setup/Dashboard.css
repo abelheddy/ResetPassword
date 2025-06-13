@@ -1,0 +1,530 @@
+/* Variables de diseño */
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --error-color: #f44336;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --neutral-color: #607d8b;
+    --text-dark: #212121;
+    --text-light: #f5f5f5;
+    --bg-light: #f8f9fa;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+
+/* Estilos base */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+}
+
+/* Loading state */
+.dashboard-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.dashboard-error {
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--error-color);
+}
+
+.btn-retry {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1rem;
+    transition: var(--transition);
+}
+
+.btn-retry:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Header */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.status-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-indicator.active {
+    background-color: var(--success-color);
+}
+
+/* Status cards */
+.status-section {
+    margin-bottom: 3rem;
+}
+
+.status-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.status-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.status-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.status-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.status-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--neutral-color);
+}
+
+.status-card p {
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.status-card.active {
+    border-left: 4px solid var(--success-color);
+}
+
+.status-card.neutral {
+    border-left: 4px solid var(--neutral-color);
+}
+
+/* Action buttons */
+.actions-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.action-btn {
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 200px;
+}
+
+.action-btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background-color: var(--secondary-color);
+}
+
+.action-btn.secondary {
+    background-color: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.action-btn.secondary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-btn.tertiary {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+.action-btn.tertiary:hover {
+    background-color: #e0e0e0;
+}
+/* ... (mantén todos los estilos anteriores) ... */
+
+/* DB Test Result */
+.db-test-result {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: var(--bg-light);
+}
+
+.db-test-result.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.db-test-result.error {
+    border-left: 4px solid var(--error-color);
+}
+
+.db-test-result h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.db-test-result pre {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+}
+
+/* Button Spinner */
+.button-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Disabled button state */
+.action-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* DB Actions Section */
+.db-actions-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+}
+/* Estilos para los botones de acción */
+.action-btn {
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    min-width: 200px;
+}
+
+.action-btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-btn.primary:hover:not(:disabled) {
+    background-color: var(--secondary-color);
+}
+
+.action-btn.secondary {
+    background-color: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.action-btn.secondary:hover:not(:disabled) {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.action-btn.error {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.action-btn.error:hover:not(:disabled) {
+    background-color: #d32f2f;
+}
+
+.action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Panel de modo configuración */
+.config-mode-panel {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    border-left: 4px solid var(--warning-color);
+}
+
+.config-mode-panel h3 {
+    margin-top: 0;
+    color: var(--warning-color);
+}
+
+/* Estilos para el indicador de estado */
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.active {
+    background-color: var(--success-color);
+}
+
+.status-indicator.inactive {
+    background-color: var(--neutral-color);
+}
+/* Estilos para el progreso */
+.progress-indicator {
+    margin: 20px 0;
+    width: 100%;
+}
+
+.progress-bar {
+    height: 10px;
+    background: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #28a745;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #6c757d;
+}
+
+/* Estilos para las etapas */
+.setup-stage {
+    background: #f8f9fa;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border-left: 4px solid #6c757d;
+    transition: all 0.3s ease;
+}
+
+.setup-stage.completed {
+    border-left-color: #28a745;
+    opacity: 0.8;
+}
+
+.setup-stage.current {
+    border-left-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.1);
+}
+
+.stage-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.stage-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 0.8em;
+}
+
+.setup-stage.completed .stage-number {
+    background: #28a745;
+}
+
+.stage-header h3 {
+    margin: 0;
+    flex-grow: 1;
+}
+
+.btn-reset {
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.btn-reset:hover {
+    color: #dc3545;
+}
+
+.stage-completed {
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Formulario admin */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.error {
+    color: #dc3545;
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: block;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.success-message span {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+/* Botones */
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-primary, .btn-secondary, .btn-success {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #0069d9;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.action-buttons {
+    margin-top: 15px;
+}
+.admin-exists-note {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 4px;
+}
+
+.admin-exists-note p {
+    margin: 5px 0;
+    color: #2e7d32;
+}
+
+.admin-form input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
